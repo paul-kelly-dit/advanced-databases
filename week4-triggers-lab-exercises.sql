@@ -37,3 +37,34 @@ update shops set country = 'uk' where shop_id=1;
 update shops set address = 'carlow' where shop_id=1;
 
 
+# Solution to exercise 3
+
+create TRIGGER cannot_delete_customer_if_sales_present
+before DELETE on customers
+for each row
+    begin
+        if (select count(sales_id) from sales where sales.cust_id = OLD.cust_id > 0) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Customer has sales, cannot delete';
+        end if;
+    end;
+
+# Test it out
+
+INSERT INTO customers
+(cust_id, name, signup, creditlimit, vip, shop_id)
+VALUES (3, "CannotDeleteName", NOW(), 300, 'n', 10);
+
+
+INSERT into sales
+(sales_id, cust_id, tstamp, amount, prod_id) VALUES (1, 3, NOW(), 300, 2)
+
+
+INSERT INTO customers
+(cust_id, name, signup, creditlimit, vip, shop_id)
+VALUES (4, "CanDeleteName", NOW(), 300, 'n', 10);
+
+# should error with 'Customer has sales, cannot delete
+delete from customers where cust_id = 3;
+# should be able to delete as no sales
+delete from customers where cust_id = 4;
+
