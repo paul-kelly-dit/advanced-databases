@@ -7,7 +7,10 @@ CREATE TABLE student_grade (
     total_scores int(11)
 );
 
-TODO - Do your triggers before the next step
+CREATE TRIGGER calculate_total_scores
+    BEFORE INSERT ON student_grade
+    FOR EACH ROW SET NEW.total_scores = NEW.CA_scores + NEW.exam_scores + NEW.test_scores;
+
 
 INSERT INTO student_grade
 (id,names,CA_scores ,test_scores,exam_scores) 
