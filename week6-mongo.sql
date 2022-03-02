@@ -1,3 +1,17 @@
+// this creates todo database
+use todo
+
+// insert a document into database
+db.tasks.insertOne({name:"Learn Inserts",});
+
+// list all databases
+show databases
+
+// drop a database
+db.dropDatabase()
+
+
+// blogs
 use myblog
 
 db.posts.insertOne({
