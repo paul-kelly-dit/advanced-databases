@@ -157,7 +157,7 @@ db.tasks.insertMany([
 
 db.tasks.find({
     priority: {
-        $exist: true
+        $exists: true
     }
 });
 
