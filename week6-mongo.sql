@@ -11,52 +11,205 @@ show databases
 db.dropDatabase()
 
 
-// blogs
-use myblog
-
-db.posts.insertOne({
-  "blog": "Blog Post 4",
-  "content": "my blog content",
-  "likes": 6,
-  "comments": [
-    {
-      "text": "nice post!",
-      "user": "paul",
-      "date": "24/02/2021"
-    },
-    {
-      "text": "very cool",
-      "user": "john",
-      "date": "24/02/2021"
-    },
-    {
-      "text": "excellent!",
-      "user": "zoe",
-      "date": "24/02/2021"
-    },
-
-  ]
+db.tasks.insertOne({
+    name: "Learn MongoDB",
+    date: new Date(),
+    priority: 1,
+    status: "pending",
+    user: "paul",
+    assignee:"paul"
 });
 
-db.posts.insertOne({
-  "blog": "Travel Blog",
-  "content": "my blog content",
-  "likes": 12,
-  "comments": [
-    {
-      "text": "awesome!",
-      "user": "paul",
-      "date": "24/02/2021"
+db.tasks.find({
+    status: "pending",
+});
+
+
+db.tasks.insertMany([
+  {
+      name: 'Task 1',
+      assignee: {
+        username: 'user_a',
+      },
+  },
+  {
+      name: 'Task 2',
+      assignee: {
+            username: 'user_b',
+      },
+  }
+]);
+
+
+db.tasks.find({
+    'assignee.username': { $eq: 'user_a' },
+})
+
+db.tasks.insertMany([
+{
+        name: 'Task 1',
+        categories: [{
+            key: 'category_a',
+        }, {
+            key: 'category_b',
+        }]
+},
+{
+        name: 'Task 2',
+        categories: [{
+            key: 'category_c',
+        }, {
+            key: 'category_d',
+        }]
+}
+]);
+
+// greater than example
+db.tasks.insertMany([
+{
+  name: 'Task 1',
+  priority: 1,
+},
+{
+  name: 'Task 2',
+  priority: 2,
+}
+]);
+
+db.tasks.find({
+    priority: {
+        $gt: 1,
+    },
+});
+
+
+// $and operator
+db.tasks.insertMany([
+{
+  name: 'Task 1',
+  priority: 1,
+  status: 'pending',
+},
+{
+  name: 'Task 2',
+  priority: 1,
+  status: 'completed',
+},
+{
+  name: 'Task 3',
+  priority: 2,
+  status: 'pending',
+}
+]);
+
+db.tasks.find({
+    $and: [
+        {
+            priority: 1,
+        },
+        {
+            status: 'pending',
+        }
+    ]
+});
+
+// or
+db.tasks.insertMany([
+{
+  name: 'Task 1',
+  priority: 1,
+  status: 'pending',
+},
+{
+  name: 'Task 2',
+  priority: 1,
+  status: 'completed',
+},
+{
+  name: 'Task 3',
+  priority: 2,
+  status: 'pending',
+}
+]);
+
+db.tasks.find({
+    $or: [
+        {
+            priority: 1,
+        },
+        {
+            status: 'pending',
+        }
+    ]
+});
+
+// exist
+db.tasks.insertMany([
+{
+      name: 'Task 1',
+	    priority: 1,
+},
+{
+      name: 'Task 2',
+      status: 'pending',
+}
+]);
+
+db.tasks.find({
+    priority: {
+        $exist: true
     }
-  ]
 });
 
--- find all blog posts that paul commented on
-db.posts.find( { "comments.user" : { $eq: "paul" } } )
+// specific fields
 
--- find posts with likes greater than 3
-db.posts.find( { likes: { $gt: 3 } } )
+db.tasks.insertMany([
+{
+  name: 'Task 1',
+  priority: 1
+},
+{
+  name: 'Task 2',
+  priority: 2
+}
+]);
 
-db.posts.deleteMany({});
+db.tasks.find({}, {name: 1});
+
+// sort
+db.tasks.insertMany([
+{
+  name: 'Task 1',
+  priority: 1
+},
+{
+  name: 'Task 2',
+  priority: 2
+}
+]);
+
+db.tasks.find().sort({priority: -1});
+
+
+// update
+
+db.dropDatabase()
+
+db.tasks.insertOne({
+  name: "Learn MongoDB Topic 1",
+  date: new Date(),
+  priority: 1,
+  status: "pending",
+  user: "onkar",
+  assignee: "onkar"
+});
+
+db.tasks.updateOne({
+   _id: ObjectId("60f7d855b307d94301b9cb90")
+}, {
+       $set: {
+       status: "completed"
+   }
+});
 
 
