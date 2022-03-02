@@ -212,4 +212,31 @@ db.tasks.updateOne({
    }
 });
 
+// update many
+db.tasks.updateMany({
+  _id: {
+      $in: [
+          ObjectId("60f7d855b307d94301b9cb90"), 
+          ObjectId("60f7d855b307d94301b9cb91")
+      ]
+  }
+}, 
+{
+  $set: {
+      status: "completed"
+  }
+});
+
+db.tasks.updateOne({
+  name: "Learn MongoDB Topic 1"
+}, 
+{
+  $set: {
+      priority: 2
+  }
+});
+
+db.tasks.deleteOne({
+      _id: ObjectId("60f7d855b307d94301b9cb90")
+});
 
